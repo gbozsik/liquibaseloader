@@ -12,6 +12,15 @@ public class Main {
 
     private StringBuilder builder = new StringBuilder();
     private int count = 0;
+    private String line = "";
+    private String cvsSplitBy = ",";
+
+    //File what you read
+    private String csvFile = "/home/gbozsik/Downloads/CUST_RISK_SEGMENT_RATING.csv";
+
+    //File to write
+    final Path dst = Paths.get("/home/gbozsik/Downloads/generated_cust_risk_segment_rating.csv");
+
 
     public static void main(String[] args) throws IOException {
         Main main = new Main();
@@ -19,10 +28,18 @@ public class Main {
     }
 
     private void processCsv() throws IOException {
-        buildFixPart();
-        buildImportedPart();
+        /*********FROM CSV TO YAML*************/
+//        buildFixPart();
+//        buildImportedPart();
+        /*********FROM CSV TO YAML**************
+         **OR**
+         **********FROM CSV TO NATIVE SQL********/
+        createSqlInsert();
+        /*********FROM CSV TO NATIVE SQL********/
+
         writeToFile();
     }
+
 
     public void buildFixPart() {
         builder.append("- changeSet: " + System.lineSeparator());
@@ -50,15 +67,11 @@ public class Main {
         builder.append(" \t\t\t\t\t\t value: 0" + System.lineSeparator());
     }
 
-    public void buildImportedPart() {
-        String csvFile = "/home/gbozsik/Downloads/CUSTOMER_RISK_RATING_csv.csv";
+    public void buildImportedPart() throws FileNotFoundException {
         BufferedReader br = null;
-        String line = "";
-        String cvsSplitBy = ",";
-
-
+        StringBuilder builder = new StringBuilder();
         try {
-            br = new BufferedReader(new FileReader(csvFile));
+        br = new BufferedReader(new FileReader(csvFile));
             br.readLine();
             while ((line = br.readLine()) != null) {
                 buildStaticLines();
@@ -95,12 +108,24 @@ public class Main {
 
     public void writeToFile() throws IOException {
         final BufferedWriter writer;
-        final Path dst = Paths.get("/home/gbozsik/Downloads/generated_CUSTOMER_RISK_RATING.csv");
-
         writer = Files.newBufferedWriter(dst, StandardCharsets.UTF_8);
         writer.write(builder.toString());
         System.out.println(builder);
         System.out.println("Insertek száma: " + count);
+        writer.close();
     }
 
+    private void createSqlInsert() throws IOException {
+        BufferedReader br = null;
+        br = new BufferedReader(new FileReader(csvFile));
+        br.readLine();
+        while ((line = br.readLine()) != null) {
+            // use comma as separator
+            String[] importedSplittedLine = line.split(cvsSplitBy);
+
+            builder.append("INSERT INTO cust_risk_segment_rating (customer_risk_segment_id, customer_risk_rating_id, valid_from) values ((SELECT id FROM customer_risk_segment WHERE code='" +
+                    importedSplittedLine[0] + "'), (select id from CUSTOMER_RISK_RATING where code='" + importedSplittedLine[1] + "'), (GETDATE()))" + System.lineSeparator());
+            count++;
+        }
+    }
 }
