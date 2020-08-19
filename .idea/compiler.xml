@@ -6,8 +6,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="createinsertfromcsv" />
         <module name="liquibaseinsertloader" />
+        <module name="createinsertfromcsv" />
+        <module name="liquibaseloader" />
       </profile>
     </annotationProcessing>
   </component>

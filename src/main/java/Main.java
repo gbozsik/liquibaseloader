@@ -13,13 +13,13 @@ public class Main {
     private StringBuilder builder = new StringBuilder();
     private int count = 0;
     private String line = "";
-    private String cvsSplitBy = ",";
+    private String cvsSplitBy = "\t";
 
     //File what you read
-    private String csvFile = "/home/gbozsik/Downloads/CUST_RISK_SEGMENT_RATING.csv";
+    private String csvFile = "/home/gbozsik/Downloads/to_liquibase/FFR tabla feltoltesek_v5.csv";
 
     //File to write
-    final Path dst = Paths.get("/home/gbozsik/Downloads/generated_cust_risk_segment_rating.csv");
+    final Path destinationPath = Paths.get("/home/gbozsik/Downloads/FFR tabla feltoltesek_v5.txt");
 
 
     public static void main(String[] args) throws IOException {
@@ -29,12 +29,12 @@ public class Main {
 
     private void processCsv() throws IOException {
         /*********FROM CSV TO YAML*************/
-//        buildFixPart();
-//        buildImportedPart();
+        buildFixPart();
+        buildImportedPart();
         /*********FROM CSV TO YAML**************
          **OR**
          **********FROM CSV TO NATIVE SQL********/
-        createSqlInsert();
+//        createSqlInsert();
         /*********FROM CSV TO NATIVE SQL********/
 
         writeToFile();
@@ -51,25 +51,25 @@ public class Main {
 
     public void buildStaticLines() {
         builder.append(" \t- insert:" + System.lineSeparator());
-        builder.append(" \t\t\t tableName: CUSTOMER_RISK_RATING" + System.lineSeparator());
+        builder.append(" \t\t\t tableName: DSP" + System.lineSeparator());
         builder.append(" \t\t\t columns:" + System.lineSeparator());
-        builder.append(" \t\t\t - column:" + System.lineSeparator());
-        builder.append(" \t\t\t\t\t\t name: CREATED_AT" + System.lineSeparator());
-        builder.append(" \t\t\t\t\t\t value: GETDATE()" + System.lineSeparator());
-        builder.append(" \t\t\t - column:" + System.lineSeparator());
-        builder.append(" \t\t\t\t\t\t name: MODIFIED_AT" + System.lineSeparator());
-        builder.append(" \t\t\t\t\t\t value: GETDATE()" + System.lineSeparator());
-        builder.append(" \t\t\t - column:" + System.lineSeparator());
-        builder.append(" \t\t\t\t\t\t name: VALID_FROM" + System.lineSeparator());
-        builder.append(" \t\t\t\t\t\t value: GETDATE()" + System.lineSeparator());
-        builder.append(" \t\t\t - column:" + System.lineSeparator());
-        builder.append(" \t\t\t\t\t\t name: VERSION" + System.lineSeparator());
-        builder.append(" \t\t\t\t\t\t value: 0" + System.lineSeparator());
+//        builder.append(" \t\t\t - column:" + System.lineSeparator());
+//        builder.append(" \t\t\t\t\t\t name: CREATED_AT" + System.lineSeparator());
+//        builder.append(" \t\t\t\t\t\t value: GETDATE()" + System.lineSeparator());
+//        builder.append(" \t\t\t - column:" + System.lineSeparator());
+//        builder.append(" \t\t\t\t\t\t name: MODIFIED_AT" + System.lineSeparator());
+//        builder.append(" \t\t\t\t\t\t value: GETDATE()" + System.lineSeparator());
+//        builder.append(" \t\t\t - column:" + System.lineSeparator());
+//        builder.append(" \t\t\t\t\t\t name: VALID_FROM" + System.lineSeparator());
+//        builder.append(" \t\t\t\t\t\t value: GETDATE()" + System.lineSeparator());
+//        builder.append(" \t\t\t - column:" + System.lineSeparator());
+//        builder.append(" \t\t\t\t\t\t name: VERSION" + System.lineSeparator());
+//        builder.append(" \t\t\t\t\t\t value: 0" + System.lineSeparator());
     }
 
     public void buildImportedPart() throws FileNotFoundException {
         BufferedReader br = null;
-        StringBuilder builder = new StringBuilder();
+//        StringBuilder builder = new StringBuilder();
         try {
         br = new BufferedReader(new FileReader(csvFile));
             br.readLine();
@@ -79,14 +79,24 @@ public class Main {
                 String[] importedSplittedLine = line.split(cvsSplitBy);
 
                 builder.append(" \t\t\t - column:" + System.lineSeparator());
-                builder.append(" \t\t\t\t\t\t name: CODE" + System.lineSeparator());
+                builder.append(" \t\t\t\t\t\t name: ID" + System.lineSeparator());
                 builder.append(" \t\t\t\t\t\t value: " + importedSplittedLine[0] + System.lineSeparator());
                 builder.append(" \t\t\t - column:" + System.lineSeparator());
-                builder.append(" \t\t\t\t\t\t name: DESCRIPTION" + System.lineSeparator());
+                builder.append(" \t\t\t\t\t\t name: DSP_NAME" + System.lineSeparator());
                 builder.append(" \t\t\t\t\t\t value:  " + importedSplittedLine[1] + System.lineSeparator());
                 builder.append(" \t\t\t - column:" + System.lineSeparator());
-                builder.append(" \t\t\t\t\t\t name: I18N" + System.lineSeparator());
-                builder.append(" \t\t\t\t\t\t value: '[{\"lang\": \"hu\",\"key\": \"code\",\"text\": \"" + importedSplittedLine[0] + "\"}, {\"lang\": \"en\",\"key\": \"code\",\"text\": \"" + importedSplittedLine[0] + "\"}]'" + System.lineSeparator());
+                builder.append(" \t\t\t\t\t\t name: AIR_PARTY_ID" + System.lineSeparator());
+                builder.append(" \t\t\t\t\t\t value:  " + importedSplittedLine[2] + System.lineSeparator());
+                builder.append(" \t\t\t - column:" + System.lineSeparator());
+                builder.append(" \t\t\t\t\t\t name: DSP_STATUS" + System.lineSeparator());
+                builder.append(" \t\t\t\t\t\t value:  " + importedSplittedLine[3] + System.lineSeparator());
+                builder.append(" \t\t\t - column:" + System.lineSeparator());
+                builder.append(" \t\t\t\t\t\t name: MANUAL_UPLOAD_ALLOWED" + System.lineSeparator());
+                builder.append(" \t\t\t\t\t\t value:  " + importedSplittedLine[4] + System.lineSeparator());
+
+//                builder.append(" \t\t\t - column:" + System.lineSeparator());
+//                builder.append(" \t\t\t\t\t\t name: AIR_PARTY_ID" + System.lineSeparator());
+//                builder.append(" \t\t\t\t\t\t value: '[{\"lang\": \"hu\",\"key\": \"code\",\"text\": \"" + importedSplittedLine[0] + "\"}, {\"lang\": \"en\",\"key\": \"code\",\"text\": \"" + importedSplittedLine[0] + "\"}]'" + System.lineSeparator());
                 count++;
             }
 
@@ -108,7 +118,7 @@ public class Main {
 
     public void writeToFile() throws IOException {
         final BufferedWriter writer;
-        writer = Files.newBufferedWriter(dst, StandardCharsets.UTF_8);
+        writer = Files.newBufferedWriter(destinationPath, StandardCharsets.UTF_8);
         writer.write(builder.toString());
         System.out.println(builder);
         System.out.println("Insertek száma: " + count);
